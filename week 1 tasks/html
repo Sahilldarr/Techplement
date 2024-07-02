@@ -1,1 +1,123 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .weather-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .temp {
+      font-size: 60px;
+      font-weight: bold;
+      margin-right: 20px;
+    }
+
+    .description {
+      font-size: 20px;
+    }
+
+    .forecast {
+      margin-top: 30px;
+    }
+
+    .forecast-day {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .forecast-icon {
+      font-size: 30px;
+    }
+
+    .forecast-temp {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather App</h1>
+    <div class="weather-info">
+      <div class="temp">31°C</div>
+      <div class="description">Cloudy</div>
+    </div>
+    <div class="forecast">
+      <h2>5-day Forecast</h2>
+      <div class="forecast-day">
+        <div>Today</div>
+        <i class="forecast-icon fas fa-cloud-sun"></i>
+        <div class="forecast-temp">31°/24°</div>
+      </div>
+      <div class="forecast-day">
+        <div>Tomorrow</div>
+        <i class="forecast-icon fas fa-cloud-rain"></i>
+        <div class="forecast-temp">31°/24°</div>
+      </div>
+      <div class="forecast-day">
+        <div>Thu</div>
+        <i class="forecast-icon fas fa-cloud-showers-heavy"></i>
+        <div class="forecast-temp">30°/23°</div>
+      </div>
+    </div>
+  </div>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script>
+    const city = 'Srinagar';
+
+
+    const apiKey = 'YOUR_API_KEY';
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+      .then(response => response.json())
+      .then(data => {
+    
+        document.querySelector('.temp').textContent = `${Math.round(data.main.temp)}°C`;
+        document.querySelector('.description').textContent = data.weather[0].description;
+
+    
+        const forecastDays = document.querySelectorAll('.forecast-day');
+        const forecastData = data.list.slice(0, 5); // Get next 5 days
+
+        forecastData.forEach((day, index) => {
+    
+          const iconCode = day.weather[0].icon;
+          const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+          forecastDays[index].querySelector('.forecast-icon').style.backgroundImage = `url(${iconUrl})`;
+
+
+          forecastDays[index].querySelector('.forecast-temp').textContent = `${Math.round(day.main.temp_min)}° / ${Math.round(day.main.temp_max)}°`;
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching weather data:', error);
+      });
+  </script>
+</body>
+</html>
